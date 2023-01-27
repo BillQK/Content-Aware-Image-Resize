@@ -15,6 +15,7 @@ Matrix::Matrix(int width, int height): Matrix{width, height, 0} {}
 // Initializes a Matrix with the given dimensions and
 // with each cell initialized to the value specified by fill_value.
 Matrix::Matrix(int width, int height, int fill_value): m_width(width), m_height(height) {
+    assert (fill_value <= 255 && fill_value >= 0);
     for(int i = 0; i < height * width; ++i){
         m_data.push_back(fill_value);
     }
@@ -41,20 +42,6 @@ const int& Matrix::at(int row, int column) const {
     // assert ((row >= 0) && (column >= 0) && (row < m_height) && (column < m_width));
     return m_data.at(m_width*row+column);
 }
-
-/*
-  0 1 2 3 4
-0 x x x x x 
-1 x x x x x
-
-width = 5
-
-(0,0): 5(0)+0 = 0
-(1)(1) 5(1)+ 1 = 6
-
-      0 1 2 3 4   5 6 7 8 9
-1d -> x x x x x | x x x x x
-*/
 
 Matrix::Slice Matrix::get_row_slice(int row, int col_start, int col_end) const {
     assert(col_start<col_end);

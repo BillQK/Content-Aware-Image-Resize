@@ -16,7 +16,10 @@ Image::Image(int width, int height, const Pixel& fill): m_width(width), m_height
 }
 
 Image Image::read_ppm(std::istream& is) {
-    string first;
+    // Read the first line - P3 (indicates it's a "Plain PPM file")
+    // Read the width and height (seperated by spaces)
+    // read is stream then store it in the channel array, accordingly. 
+     string first;
     getline(is,first);
     cout << "STREAM READPPM" << first <<endl;
 
