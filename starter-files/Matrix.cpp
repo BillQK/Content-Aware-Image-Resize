@@ -72,11 +72,10 @@ void Matrix::print(std::ostream& os) const {
     int index = 0;
     for(int row = 0; row<m_height; row++) {
         for(int col = 0; col<m_width; col++) {
-            // q: is this how to add a space after a variable?
             // better to use .at(index) bc it'll give an error when go oob for [index]
-            os << m_data.at(index) << " ";
+            os << m_data.at(index) << " "; 
             index++;
         }
-        os << "\n";
+        os << endl;
     }
 }
