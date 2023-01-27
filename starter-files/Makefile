@@ -8,9 +8,9 @@ CXX ?= g++
 CXXFLAGS ?= --std=c++17 -Wall -Wextra -pedantic -g
 
 # Run a regression test
-test: matrix_public_test.exe matrix image_public_test.exe image processing_public_tests.exe resize.exe
-	./matrix
-	./image
+test: matrix_public_test.exe matrix.exe image_public_test.exe image.exe processing_public_tests.exe resize.exe
+	./matrix.exe
+	./image.exe
 	./processing_public_tests.exe
 	./resize.exe dog.ppm dog_4x5.out.ppm 4 5
 	diff dog_4x5.out.ppm dog_4x5.correct.ppm
@@ -18,14 +18,14 @@ test: matrix_public_test.exe matrix image_public_test.exe image processing_publi
 matrix_public_test.exe: Matrix_public_test.cpp Matrix.cpp Matrix_test_helpers.cpp
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
-matrix: Matrix_tests.cpp Matrix.cpp Matrix_test_helpers.cpp
+matrix.exe: Matrix_tests.cpp Matrix.cpp Matrix_test_helpers.cpp
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
 image_public_test.exe: Image_public_test.cpp Matrix.cpp Image.cpp \
 			Matrix_test_helpers.cpp Image_test_helpers.cpp
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
-image: Image_tests.cpp Matrix.cpp Image.cpp Matrix_test_helpers.cpp \
+image.exe: Image_tests.cpp Matrix.cpp Image.cpp Matrix_test_helpers.cpp \
 			Image_test_helpers.cpp
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
