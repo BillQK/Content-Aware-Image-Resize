@@ -39,6 +39,11 @@ TEST(test_print_basic) {
 // ADD YOUR TESTS HERE
 // You are encouraged to use any functions from Image_test_helpers.h as needed.
 
+// TEST(test_readppm) {
+//   Image img(2, 2);
+//   istream& is("dog_4x5.correct");
+// }
+
 // This is some macro magic that adds a main() function that runs the test cases
 // defined in this file. Do not add your own main() function.
 TEST_MAIN()

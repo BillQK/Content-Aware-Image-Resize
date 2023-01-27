@@ -9,15 +9,39 @@ Image::Image(): m_width(0), m_height(0) {}
 
 Image::Image(int width, int height): Image{width, height, Pixel{0,0,0}} {}
 
-Image::Image(int width, int height, const Pixel& fill) : m_width(width), m_height(height) {
+Image::Image(int width, int height, const Pixel& fill): m_width(width), m_height(height) {
     m_red_channel = Matrix(width, height, fill.r);
     m_green_channel = Matrix(width, height, fill.g);
     m_blue_channel = Matrix(width, height, fill.b);
 }
 
-Image Image::read_ppm(std::istream& is) {} 
+Image Image::read_ppm(std::istream& is) {
+    string first;
+    getline(is,first);
+    cout << "STREAM READPPM" << first <<endl;
 
-void Image::print(std::ostream& os) const {} 
+    return Image{};
+} 
+
+void Image::print(std::ostream& os) const {
+    os << "STREAM PRINT START:" << endl;
+    os << "P3" << endl;
+    os << get_width() << " " << get_height() << endl;
+    os << c_max_intensity << endl;
+    // print pixel
+    for(int row=0;row<m_height; row++) {
+        for(int col=0; col<m_width; col++) {
+            os << m_red_channel.at(row, col) << " ";
+            os << m_green_channel.at(row, col) << " ";
+            os << m_blue_channel.at(row, col) << " ";
+        }
+        os << endl;
+    }
+} 
+/*
+red green blue
+0,0  0,0  0,0
+*/
 
 int Image::get_width() const { return m_width; }
 

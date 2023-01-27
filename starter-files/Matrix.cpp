@@ -34,15 +34,29 @@ int& Matrix::at(int row, int column) {
     assert (row <= m_height);
     assert (column <= m_width);
 
-    return m_data[row*column+1];
+    return m_data.at(m_width*row+column);
 }
 
 const int& Matrix::at(int row, int column) const {
     // assert ((row >= 0) && (column >= 0) && (row < m_height) && (column < m_width));
-    return m_data[row*column+1];
+    return m_data.at(m_width*row+column);
 }
 
-Matrix::Slice Matrix::get_row_slice(int row, int col_start, int col_end) {
+/*
+  0 1 2 3 4
+0 x x x x x 
+1 x x x x x
+
+width = 5
+
+(0,0): 5(0)+0 = 0
+(1)(1) 5(1)+ 1 = 6
+
+      0 1 2 3 4   5 6 7 8 9
+1d -> x x x x x | x x x x x
+*/
+
+Matrix::Slice Matrix::get_row_slice(int row, int col_start, int col_end) const {
     assert(col_start<col_end);
     assert(row>=0);
     assert(row<=m_height);
@@ -63,6 +77,7 @@ Matrix::Slice Matrix::get_row_slice(int row, int col_start, int col_end) {
     for(int i = col_start; i<col_end; i++) {
         data.push_back(at(row, i));
     }
+    return s;
 }
 
 void Matrix::print(std::ostream& os) const {

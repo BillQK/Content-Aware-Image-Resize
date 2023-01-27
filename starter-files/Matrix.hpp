@@ -75,7 +75,7 @@ public:
   // Note: When defining this method in Matrix.cpp, you will need to change
   // The return type from Slice to Matrix::Slice. In the body of the method
   // definition, you will be able to refer to it as Slice.
-  Slice get_row_slice(int row, int col_start, int col_end);
+  Slice get_row_slice(int row, int col_start, int col_end) const;
 
   // Prints this Matrix to the stream referenced by os as follows:
   // First, prints the width and height for the Matrix to os:
