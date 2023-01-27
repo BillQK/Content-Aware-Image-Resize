@@ -15,7 +15,11 @@ Image::Image(int width, int height, const Pixel& fill) : m_width(width), m_heigh
     m_blue_channel = Matrix(width, height, fill.b);
 }
 
-Image Image::read_ppm(std::istream& is) {} 
+Image Image::read_ppm(std::istream& is) {
+    // Read the first line - P3 (indicates it's a "Plain PPM file")
+    // Read the width and height (seperated by spaces)
+    // read is stream then store it in the channel array, accordingly. 
+} 
 
 void Image::print(std::ostream& os) const {} 
 

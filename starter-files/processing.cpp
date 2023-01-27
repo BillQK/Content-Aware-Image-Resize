@@ -27,6 +27,7 @@ Image rotate_left(const Image& img) {
 // Returns a copy of the given image that is rotated 90 degrees to the
 // right (clockwise).
 Image rotate_right(const Image& img) {
+  
 }
 
 // Returns the energy Matrix computed from the given Image.
