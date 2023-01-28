@@ -18,10 +18,6 @@ Image::Image(int width, int height, const Pixel& fill): m_width(width), m_height
 }
 
 Image Image::read_ppm(std::istream& is) {
-    // Read the first line - P3 (indicates it's a "Plain PPM file")
-    // Read the width and height (seperated by spaces)
-    // read is stream then store it in the channel array, accordingly. 
-
     // getting width & height
     string trash; // q: how to skip the words that i don't need word ?
     is >> trash; // P3
@@ -32,10 +28,12 @@ Image Image::read_ppm(std::istream& is) {
     is >> trash; // max value 
 
     Image img(width, height);
-    cout<<img.get_width()<<"height"<<endl;
+    cout<<img.get_width()<<"weight"<<endl;
 
     ostringstream output;
     img.m_red_channel.print(output);
+
+    int color;
 /*
 4 width, 5 height
 (0 0 0) (255 255 250) (0 0 0)  (0 0 0)
@@ -44,32 +42,28 @@ Image Image::read_ppm(std::istream& is) {
 */
     for(int row=0; row<width; row++) {
         for(int col=0; col<height; col++) {
-            img.m_red_channel.at(row, col) = is.get();
-            img.m_green_channel.at(row, col) = is.get();
-            img.m_blue_channel.at(row, col) = is.get();
+            is>>color;
+            img.m_red_channel.at(row, col) = color;
+            is>>color;
+            img.m_green_channel.at(row, col) = color;
+            is>>color;
+            img.m_blue_channel.at(row, col) = color;
         }
     }
-    // cout<<"loops done"<<endl;
 
-    // while loop, couldn't get the math 
+    for(int row=0; row<width; row++) {
+        for(int col=0; col<height; col++) {
+            cout<< row << img.m_green_channel.at(row,col)<<" RED"<<endl;
+        }
+    }
 
-    // while(is) {
-    //     cout << color;
-    //     color=is.get();
-    //     // if (color == "\n") {
-    //     //     cout << "newline " << endl;
-    //     // }
-    // }
-    // cout << img.m_width << "width" << endl;
+    // cout<<img.m_red_channel<<" REDD"<<endl;
+    // cout<<img.m_green_channel.at(0,1)<<" GREN"<<endl;
+    // cout<<img.m_blue_channel.at(0,1)<<" BLUE"<<endl;
 
-    // stack overflow code sample
-    // char c;
-    // c = is.get();
-    // while (is)
-    // {
-    //     cout << c;
-    //     c = is.get();
-    // }
+    // cout<<img.m_red_channel.at(0,2)<<" REDD"<<endl;
+    // cout<<img.m_green_channel.at(0,2)<<" GREN"<<endl;
+    // cout<<img.m_blue_channel.at(0,2)<<" BLUE"<<endl;
 
     // return the saved image with dimensions & colors
     return img;
