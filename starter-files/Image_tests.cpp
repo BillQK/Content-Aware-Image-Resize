@@ -47,7 +47,7 @@ TEST(test_readppm) {
   ifstream file(filename);
 
   Image img; 
-  img.read_ppm(file); 
+  img = img.read_ppm(file); 
   cout << img.get_height() << " " << img.get_width() << endl;
   ostringstream actual; 
   img.print(actual);

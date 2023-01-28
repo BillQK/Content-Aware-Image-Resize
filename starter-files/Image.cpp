@@ -9,7 +9,11 @@ using namespace std;
 Image::Image(): m_width(0), m_height(0) {}
 
 
-Image::Image(int width, int height): Image{width, height, Pixel{0,0,0}} {}
+Image::Image(int width, int height): m_width(width), m_height(height) {
+    m_red_channel = Matrix(width, height, 0);
+    m_green_channel = Matrix(width, height, 0);
+    m_blue_channel = Matrix(width, height, 0);
+}
 
 Image::Image(int width, int height, const Pixel& fill): m_width(width), m_height(height) {
     m_red_channel = Matrix(width, height, fill.r);
@@ -23,14 +27,27 @@ Image Image::read_ppm(std::istream& is) {
     int height; 
     string filetype; 
     string newLine;
-    int intensity; 
+    int color_max; 
+
+    // filetype = is.get();
+    // newLine = is.get(); //
+    // width = is.get(); //
+    // height = is.get(); 
+    // newLine = is.get(); 
+    // color_max = is.get(); 
 
     is >> filetype; 
-    getline(is, newLine); //
-    is >> width >> height; 
-    getline(is, newLine); //
-    is >> intensity; 
-    getline(is, newLine); //
+    cout << filetype << endl;
+    is >> width; 
+    cout << width << endl; 
+    is >> height; 
+    cout << height << endl;
+
+
+    
+    // is.get() >> height >> width >> newLine; //
+
+    // is.get() >> intensity >> newLine; ////
 
     Image img = Image(width, height);
 
