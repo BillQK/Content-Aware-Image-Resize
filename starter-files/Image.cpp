@@ -19,43 +19,41 @@ Image::Image(int width, int height, const Pixel& fill): m_width(width), m_height
 
 Image Image::read_ppm(std::istream& is) {
     // getting width & height
-    string trash; // q: how to skip the words that i don't need word ?
-    is >> trash; // P3
-    int width;
-    is >> width;
-    int height;
-    is >> height;
-    is >> trash; // max value 
+    int width; 
+    int height; 
+    string filetype; 
+    string newLine;
+    int intensity; 
 
-    Image img(width, height);
-    cout<<img.get_width()<<"weight"<<endl;
+    is >> filetype; 
+    getline(is, newLine); //
+    is >> width >> height; 
+    getline(is, newLine); //
+    is >> intensity; 
+    getline(is, newLine); //
 
-    ostringstream output;
-    img.m_red_channel.print(output);
+    Image img = Image(width, height);
 
     int color;
-/*
-4 width, 5 height
-(0 0 0) (255 255 250) (0 0 0)  (0 0 0)
- 0 1 2    3   4   5    6 7 8   9 10 11
- r g b    r   g   b    r g b   r  g  b
-*/
     for(int row=0; row<width; row++) {
         for(int col=0; col<height; col++) {
-            is>>color;
-            img.m_red_channel.at(row, col) = color;
-            is>>color;
-            img.m_green_channel.at(row, col) = color;
-            is>>color;
-            img.m_blue_channel.at(row, col) = color;
+            if (is.peek() != '\n') {
+                is>>color;
+                img.m_red_channel.at(row, col) = color;
+                is>>color;
+                img.m_green_channel.at(row, col) = color;
+                is>>color;
+                img.m_blue_channel.at(row, col) = color;
+            }
+            else { 
+                getline(is, newLine);
+            }
         }
+        
     }
 
-    for(int row=0; row<width; row++) {
-        for(int col=0; col<height; col++) {
-            cout<< row << img.m_green_channel.at(row,col)<<" RED"<<endl;
-        }
-    }
+
+    return img; 
 
     // cout<<img.m_red_channel<<" REDD"<<endl;
     // cout<<img.m_green_channel.at(0,1)<<" GREN"<<endl;
@@ -66,12 +64,11 @@ Image Image::read_ppm(std::istream& is) {
     // cout<<img.m_blue_channel.at(0,2)<<" BLUE"<<endl;
 
     // return the saved image with dimensions & colors
-    return img;
 } 
 
 void Image::print(std::ostream& os) const {
     os << "P3" << endl;
-    os << get_width() << " " << get_height() << endl;
+    os << m_width << " " << m_height << endl;
     os << c_max_intensity << endl;
     // print pixel
     for(int row=0;row<m_height; row++) {
