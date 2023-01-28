@@ -22,65 +22,22 @@ Image::Image(int width, int height, const Pixel& fill): m_width(width), m_height
 }
 
 Image Image::read_ppm(std::istream& is) {
-    // getting width & height
-    int width; 
-    int height; 
-    string filetype; 
-    string newLine;
-    int color_max; 
-
-    // filetype = is.get();
-    // newLine = is.get(); //
-    // width = is.get(); //
-    // height = is.get(); 
-    // newLine = is.get(); 
-    // color_max = is.get(); 
-
-    is >> filetype; 
-    cout << filetype << endl;
-    is >> width; 
-    cout << width << endl; 
-    is >> height; 
-    cout << height << endl;
-
-
-    
-    // is.get() >> height >> width >> newLine; //
-
-    // is.get() >> intensity >> newLine; ////
+    string magic_number; 
+    int width, height, max_color;
+    is >> magic_number >> width >> height >> max_color;
 
     Image img = Image(width, height);
 
-    int color;
-    for(int row=0; row<width; row++) {
-        for(int col=0; col<height; col++) {
-            if (is.peek() != '\n') {
-                is>>color;
-                img.m_red_channel.at(row, col) = color;
-                is>>color;
-                img.m_green_channel.at(row, col) = color;
-                is>>color;
-                img.m_blue_channel.at(row, col) = color;
-            }
-            else { 
-                getline(is, newLine);
-            }
-        }
-        
+    for(int row=0; row<img.get_height(); row++) {
+        for(int col=0; col<img.get_width(); col++) {
+            int red, green, blue;
+            is >> red >> green >> blue;
+            Pixel p = Pixel{red, green, blue}; 
+            img.set_pixel(row, col, p);
+
+        }    
     }
-
-
     return img; 
-
-    // cout<<img.m_red_channel<<" REDD"<<endl;
-    // cout<<img.m_green_channel.at(0,1)<<" GREN"<<endl;
-    // cout<<img.m_blue_channel.at(0,1)<<" BLUE"<<endl;
-
-    // cout<<img.m_red_channel.at(0,2)<<" REDD"<<endl;
-    // cout<<img.m_green_channel.at(0,2)<<" GREN"<<endl;
-    // cout<<img.m_blue_channel.at(0,2)<<" BLUE"<<endl;
-
-    // return the saved image with dimensions & colors
 } 
 
 void Image::print(std::ostream& os) const {
