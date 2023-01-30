@@ -22,7 +22,31 @@ namespace {
 // Returns a copy of the given image that is rotated 90 degrees to the
 // left (counterclockwise).
 Image rotate_left(const Image& img) {
+  int new_width = img.get_height();
+  int new_height = img.get_width();
+  Image new_img = Image{new_width, new_height};
+  for(int row=0; row<new_height; ++row) {
+    for(int col=0; col<new_width; ++col) {
+      // new_img.get_pixel(row, col) = img.get_pixel(0+col, img.get_width()-row);
+      // now convert it to set_pixel
+      Pixel from_pixel = img.get_pixel(0+col, img.get_width()-row);
+      new_img.set_pixel(row, col, from_pixel);
+    }
+  }
+  return new_img;
 
+// make new image with height & width flipped
+/*
+pixel (0,0) top left is now at (height, 0) bottom left
+(0,1) -> (height-1, 0)
+the height refers to the new height
+(1, 0)-> (height, 1)
+(1,1)-> (height-1, 1)
+(r, c)-> (r-i, c)
+pixel (0, width) top right is now at (0,0) top left
+pixel (height, 0) bottom left is now at (height, width) bottom right
+pixel (height, width) bottom right is now at (0, width) top right
+*/
 }
 // Returns a copy of the given image that is rotated 90 degrees to the
 // right (clockwise).
@@ -33,7 +57,18 @@ Image rotate_right(const Image& img) {
 // Returns the energy Matrix computed from the given Image.
 // See the assignment spec for details on computing the energy matrix.
 Matrix compute_energy_matrix(const Image& img) {
-
+  Matrix energy_mat = Matrix{img.get_height(), img.get_width()};
+  int max_energy;
+  for(int row=1; row<energy_mat.get_height()-1; ++row) {
+    for(int col=1; col<energy_mat.get_width()-1; ++col) {
+      Pixel n=img.get_pixel(row-1, col);
+      Pixel s=img.get_pixel(row+1, col);
+      // do west east
+      int energy_x = energy_mat.at(row, col) = squared_difference(n,s);
+      max_energy = std::max(energy_x, max_energy);
+    }
+  }
+  // todo: fill borders
 }
 
 // Returns the vertical cost Matrix computed from the given Image.

@@ -60,14 +60,27 @@ TEST(test_readppm) {
   correct << "255 219 183 255 219 183 255 219 183 255 219 183 \n";
   correct << "255 219 183 134 0 0 0 0 0 255 219 183 \n";
 
-
   ASSERT_EQUAL(correct.str(), actual.str());
 
-  // ifstream file(filename.c_str());
   // if(is.is_open()) {
   //   Image::readppm(is);
   // }
-  
+}
+
+TEST(test_get_width) {
+
+}
+
+TEST(test_get_height) {
+
+}
+
+TEST(test_get_pixel) {
+
+}
+
+TEST(test_set_pixel) {
+
 }
 
 // This is some macro magic that adds a main() function that runs the test cases

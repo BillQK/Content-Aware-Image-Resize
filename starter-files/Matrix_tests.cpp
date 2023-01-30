@@ -28,6 +28,9 @@ TEST(test_Matrix_fill_basic)
 // This is some macro magic that adds a main() function that runs the test cases
 // defined in this file. Do not add your own main() function.
 
+TEST(test_Matrix_fill) {
+// 2 constructors
+}
 TEST(test_Matrix_get_Width) {
   const int width = 3; 
   const int height = 5; 
