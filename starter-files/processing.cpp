@@ -31,17 +31,11 @@ Image rotate_left(const Image& img) {
   Image new_img = Image{new_width, new_height};
   for(int row=0; row<new_height; ++row) {
     for(int col=0; col<new_width; ++col) {
-      Pixel from_pixel = img.get_pixel(0+col, img.get_width()-row);
+      Pixel from_pixel = img.get_pixel(col, img.get_width()-1-row);
       new_img.set_pixel(row, col, from_pixel);
     }
   }
   return new_img;
-
-/*
-new image set (old pixel)
-new (0,0) = old (top right: 0,w)
-new (0,w) = 
-*/
 }
 // Returns a copy of the given image that is rotated 90 degrees to the
 // right (clockwise).
