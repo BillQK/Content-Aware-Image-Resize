@@ -69,16 +69,29 @@ Image rotate_right(const Image& img) {
 Matrix compute_energy_matrix(const Image& img) {
   Matrix energy_mat = Matrix{img.get_height(), img.get_width()};
   int max_energy;
+  // fills middle
   for(int row=1; row<energy_mat.get_height()-1; ++row) {
     for(int col=1; col<energy_mat.get_width()-1; ++col) {
       Pixel n=img.get_pixel(row-1, col);
-      Pixel s=img.get_pixel(row+1, col);
-      // do west east
-      int energy_x = energy_mat.at(row, col) = squared_difference(n,s);
+      Pixel s=img.get_pixel(row-1, col);
+      Pixel w=img.get_pixel(row, col-1);
+      Pixel e=img.get_pixel(row, col+1);
+      
+      int energy_x = squared_difference(n,s) + squared_difference(w,e);
+      energy_mat.at(row, col) = energy_x;
+      
       max_energy = std::max(energy_x, max_energy);
     }
   }
-  // todo: fill borders
+  // fills borders
+  for(int row=0; row<energy_mat.get_height(); ++row) {
+    for(int col=0; col<energy_mat.get_width(); ++col) {
+      if(row==0 || col==0 || row==energy_mat.get_height()-1 || col==energy_mat.get_width()-1) {
+        energy_mat.at(row, col) = max_energy;
+      }
+    }
+  }
+  return energy_mat;
 }
 
 // Returns the vertical cost Matrix computed from the given Image.
@@ -86,13 +99,35 @@ Matrix compute_energy_matrix(const Image& img) {
 Matrix compute_vertical_cost_matrix(const Image& img) {
   Matrix energy_mat = compute_energy_matrix(img); 
   Matrix vertical_cost = Matrix{img.get_height(), img.get_width()};
+  // first row
+  for(int col=0; col<vertical_cost.get_width(); ++col) {
+    vertical_cost.at(0,col) = energy_mat.at(0,col);
+  }
+  // remaining rows
   for (int row = 1; row < vertical_cost.get_height(); ++row) {
-    for (int col =0; col<vertical_cost.get_width(); ++col){
-      int energy_west = energy_mat.at(row-1,col-1); 
-      int energy_center = energy_mat.at(row-1,col); 
-      int energy_east = energy_mat.at(row-1, col+1); 
-      int min_energy = std::min(energy_center, std::min(energy_west, energy_east));
-      vertical_cost.at(row,col) += min_energy; 
+    for (int col = 0; col < vertical_cost.get_width(); ++col){
+      // left border
+      if(col==0) {
+        int energy_center = energy_mat.at(row-1,col);
+        int energy_east = energy_mat.at(row-1, col+1);
+        int min_energy = std::min(energy_center, energy_east);
+        vertical_cost.at(row,col) += min_energy; 
+      }
+      // right border
+      else if(col==vertical_cost.get_width()-1) {
+        int energy_west = energy_mat.at(row-1,col-1);
+        int energy_center = energy_mat.at(row-1,col);
+        int min_energy = std::min(energy_west, energy_center);
+        vertical_cost.at(row,col) += min_energy; 
+      }
+      // everything else
+      else {
+        int energy_west = energy_mat.at(row-1,col-1);
+        int energy_center = energy_mat.at(row-1,col); 
+        int energy_east = energy_mat.at(row-1, col+1); 
+        int min_energy = std::min(energy_center, std::min(energy_west, energy_east));
+        vertical_cost.at(row,col) += min_energy; 
+      }
     } 
   }
   return vertical_cost;
@@ -105,8 +140,43 @@ Matrix compute_vertical_cost_matrix(const Image& img) {
 // one (i.e. with the lowest column number) is used.
 // See the project spec for details on computing the minimal seam.
 std::vector<int> find_minimal_vertical_seam(const Matrix& cost){ 
-  
-
+  std::vector<int> min_vect;
+  int min_col = 0;
+  for(int row=cost.get_height(); row>0; --row) {
+    // values reset every new row
+    int min_cost = 0;
+    for(int col=0; col<cost.get_width(); ++row) {  
+      // bottom row: find the minimum cost
+      if(row==cost.get_height()) {
+        // min_cost = std::min(cost.at(row, col), min_cost);
+        if(cost.at(row, col) < min_cost) {
+          min_col = col;
+        }
+      }
+      // remaining rows
+      else {
+        // left border
+        if(min_col == 0){
+          Matrix::Slice s = cost.get_row_slice(row-1, min_col, min_col+1);
+          std::vector<int> data = s.data; // get the min
+          std::min(data.at(0), data.at(1)); // this shouldnt work cause uhhh
+        }
+        // right border
+        else if(min_col == cost.get_width()-1){
+          Matrix::Slice s = cost.get_row_slice(row-1, min_col-1, min_col);
+          std::vector<int> data = s.data;
+          std::min(data.at(0), data.at(1));
+        }
+        // everything else
+        else{
+          Matrix::Slice s = cost.get_row_slice(row-1, min_col-1, min_col+1);
+          std::vector<int> data = s.data;
+          // get the minimum
+        }
+      }
+    }
+    min_vect.push_back(min_cost);
+  }
 }
 
 // Returns a copy of img with the given vertical seam removed. That is, one
