@@ -74,11 +74,23 @@ Matrix compute_energy_matrix(const Image& img) {
       Pixel n=img.get_pixel(row-1, col);
       Pixel s=img.get_pixel(row+1, col);
       // do west east
-      int energy_x = energy_mat.at(row, col) = squared_difference(n,s);
+      Pixel w = img.get_pixel(row, col-1); 
+      Pixel e = img.get_pixel(row, col+1);
+      int energy_x = energy_mat.at(row, col) = squared_difference(n,s) + squared_difference(w,e);
       max_energy = std::max(energy_x, max_energy);
     }
   }
   // todo: fill borders
+  for(int row = 0; row< energy_mat.get_height(); ++row){ 
+    energy_mat.at(row,0) = max_energy; 
+    energy_mat.at(row,energy_mat.get_width()-1) = max_energy;
+  }
+
+  for(int col = 0; col< energy_mat.get_width(); ++col) {
+    energy_mat.at(0,col) = max_energy; 
+    energy_mat.at(energy_mat.get_height()-1,col) = max_energy; 
+  }
+  return energy_mat;
 }
 
 // Returns the vertical cost Matrix computed from the given Image.
