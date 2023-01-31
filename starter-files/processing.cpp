@@ -1,5 +1,8 @@
+// #include <algorithm>
+
 #include "processing.hpp"
 
+// using namespace std;
 
 namespace {
   // The implementation of squared_difference is provided for you.
@@ -28,25 +31,16 @@ Image rotate_left(const Image& img) {
   Image new_img = Image{new_width, new_height};
   for(int row=0; row<new_height; ++row) {
     for(int col=0; col<new_width; ++col) {
-      // new_img.get_pixel(row, col) = img.get_pixel(0+col, img.get_width()-row);
-      // now convert it to set_pixel
-      Pixel from_pixel = img.get_pixel(0+col, img.get_width()-row);
+      Pixel from_pixel = img.get_pixel(col, img.get_width()-row);
       new_img.set_pixel(row, col, from_pixel);
     }
   }
   return new_img;
 
-// make new image with height & width flipped
 /*
-pixel (0,0) top left is now at (height, 0) bottom left
-(0,1) -> (height-1, 0)
-the height refers to the new height
-(1, 0)-> (height, 1)
-(1,1)-> (height-1, 1)
-(r, c)-> (r-i, c)
-pixel (0, width) top right is now at (0,0) top left
-pixel (height, 0) bottom left is now at (height, width) bottom right
-pixel (height, width) bottom right is now at (0, width) top right
+new image set (old pixel)
+new (0,0) = old (top right: 0,w)
+new (0,w) = 
 */
 }
 // Returns a copy of the given image that is rotated 90 degrees to the
@@ -140,11 +134,11 @@ Matrix compute_vertical_cost_matrix(const Image& img) {
 // See the project spec for details on computing the minimal seam.
 std::vector<int> find_minimal_vertical_seam(const Matrix& cost){ 
   std::vector<int> min_vect;
-  int min_col = 0;
+  int min_col = 0; // min_col does not need to be reset, value needs to be carried over
   for(int row=cost.get_height(); row>0; --row) {
     // values reset every new row
     int min_cost = 0;
-    for(int col=0; col<cost.get_width(); ++row) {  
+    for(int col=0; col<cost.get_width(); ++row) {
       // bottom row: find the minimum cost
       if(row==cost.get_height()) {
         // min_cost = std::min(cost.at(row, col), min_cost);
@@ -156,26 +150,62 @@ std::vector<int> find_minimal_vertical_seam(const Matrix& cost){
       else {
         // left border
         if(min_col == 0){
-          Matrix::Slice s = cost.get_row_slice(row-1, min_col, min_col+1);
-          std::vector<int> data = s.data; // get the min
-          std::min(data.at(0), data.at(1)); // this shouldnt work cause uhhh
+          Matrix::Slice s = cost.get_row_slice(row-1, min_col, min_col+1); // middle & right col
+          std::vector<int> data = s.data; // need the index of the minimum # in vector
+          // if(data.at(0) <= data.at(1)){
+          //   min_col = min_col;
+          // }
+          if(data.at(1) > data.at(0)) {
+            min_col = min_col+1;
+          }
         }
         // right border
         else if(min_col == cost.get_width()-1){
-          Matrix::Slice s = cost.get_row_slice(row-1, min_col-1, min_col);
+          Matrix::Slice s = cost.get_row_slice(row-1, min_col-1, min_col); // left & middle col
           std::vector<int> data = s.data;
-          std::min(data.at(0), data.at(1));
+
+          if(data.at(0) <= data.at(1)){
+            min_col = min_col-1;
+          }
+          // else: no change
         }
         // everything else
         else{
           Matrix::Slice s = cost.get_row_slice(row-1, min_col-1, min_col+1);
           std::vector<int> data = s.data;
-          // get the minimum
+          // 3 values in vector, get minimum & save the index to min_col
+          // // if left is min
+          // if(data.at(0) <= data.at(1)){
+          //   if(data.at(0) <= data.at(2)){
+          //     min_col = min_col-1;
+          //   }
+          // }
+          // // if middle is min
+          // if(data.at(1) < data.at(0) && data.at(1) <= data.at(2))
+          // // if right is min
+          // if(data.at(2) < data.at(0) && data.at(2) < data.at(1))
+
+          // can call min & then have for loop which has min==data.at(i), then break the loop at the first instance
+          int min_data = std::min(data.at(0), std::min(data.at(1), data.at(2)));
+          // q: unsigned long ?
+          for(unsigned long i=0; i<data.size(); ++i){
+            if(data.at(i) == min_data) {
+              min_col = i;
+              break;
+            }
+          }
         }
       }
     }
     min_vect.push_back(min_cost);
   }
+  std::vector<int> reversed_vect;
+  int iterator = 0;
+  for(int i=min_vect.size()-1; i>=0; --i){
+    reversed_vect.at(i) = min_vect.at(iterator);
+    iterator++;
+  }
+  return reversed_vect;
 }
 
 // Returns a copy of img with the given vertical seam removed. That is, one
@@ -184,19 +214,20 @@ std::vector<int> find_minimal_vertical_seam(const Matrix& cost){
 // The width of the image will be one less than before.
 // See the project spec for details on removing a vertical seam.
 Image remove_vertical_seam(const Image& img, const std::vector<int>& seam){ 
-  int new_width = img.get_width()-1;
-  int new_height = img.get_height(); 
-  Image new_img = Image{new_width, new_height}; 
-  for (int row = 0; row < new_width; ++row) {
-    for(int col = 0; col < new_height; ++col){
-      if (col == seam[row]) {
-        Pixel from_pixel = img.get_pixel(row,col+1); 
-        new_img.set_pixel(row,col,from_pixel); 
+  Image new_img = Image(img.get_width()-1, img.get_height());
+
+  Matrix vertical_cost = compute_vertical_cost_matrix(img);
+  std::vector<int> min_seam = find_minimal_vertical_seam(vertical_cost);
+
+  for(int row=0; row<img.get_height(); ++row){
+    for(int col=0; col<img.get_width(); ++col){
+      // if column = a minimum col, skip column
+      if(col == min_seam.at(col)) {
+        col++;
       }
-      else{
-        Pixel from_pixel = img.get_pixel(row,col); 
-        new_img.set_pixel(row,col,from_pixel);
-      }
+      // get pixel of original img & copy that into new_img
+      Pixel curr_pix = img.get_pixel(row,col);
+      new_img.set_pixel(row,col,curr_pix);
     }
   }
   return new_img;
