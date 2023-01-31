@@ -31,17 +31,11 @@ Image rotate_left(const Image& img) {
   Image new_img = Image{new_width, new_height};
   for(int row=0; row<new_height; ++row) {
     for(int col=0; col<new_width; ++col) {
-      Pixel from_pixel = img.get_pixel(col, img.get_width()-row);
+      Pixel from_pixel = img.get_pixel(col, img.get_width()-1-row);
       new_img.set_pixel(row, col, from_pixel);
     }
   }
   return new_img;
-
-/*
-new image set (old pixel)
-new (0,0) = old (top right: 0,w)
-new (0,w) = 
-*/
 }
 // Returns a copy of the given image that is rotated 90 degrees to the
 // right (clockwise).
@@ -62,7 +56,7 @@ Image rotate_right(const Image& img) {
 // See the assignment spec for details on computing the energy matrix.
 Matrix compute_energy_matrix(const Image& img) {
   Matrix energy_mat = Matrix{img.get_height(), img.get_width()};
-  int max_energy;
+  int max_energy = 0;
   // fills middle
   for(int row=1; row<energy_mat.get_height()-1; ++row) {
     for(int col=1; col<energy_mat.get_width()-1; ++col) {
@@ -70,7 +64,8 @@ Matrix compute_energy_matrix(const Image& img) {
       Pixel s=img.get_pixel(row+1, col);
       Pixel w = img.get_pixel(row, col-1); 
       Pixel e = img.get_pixel(row, col+1);
-      int energy_x = energy_mat.at(row, col) = squared_difference(n,s) + squared_difference(w,e);
+      energy_mat.at(row, col) = squared_difference(n,s) + squared_difference(w,e);
+      int energy_x = energy_mat.at(row, col);
       max_energy = std::max(energy_x, max_energy);
     }
   }
@@ -103,14 +98,14 @@ Matrix compute_vertical_cost_matrix(const Image& img) {
       if(col==0) {
         int energy_center = energy_mat.at(row-1,col);
         int energy_east = energy_mat.at(row-1, col+1);
-        int min_energy = std::min(energy_center, energy_east);
+        int min_energy = energy_mat.at(row,col) + std::min(energy_center, energy_east);
         vertical_cost.at(row,col) += min_energy; 
       }
       // right border
       else if(col==vertical_cost.get_width()-1) {
         int energy_west = energy_mat.at(row-1,col-1);
         int energy_center = energy_mat.at(row-1,col);
-        int min_energy = std::min(energy_west, energy_center);
+        int min_energy = energy_mat.at(row,col) +  std::min(energy_west, energy_center);
         vertical_cost.at(row,col) += min_energy; 
       }
       // everything else
@@ -118,7 +113,7 @@ Matrix compute_vertical_cost_matrix(const Image& img) {
         int energy_west = energy_mat.at(row-1,col-1);
         int energy_center = energy_mat.at(row-1,col); 
         int energy_east = energy_mat.at(row-1, col+1); 
-        int min_energy = std::min(energy_center, std::min(energy_west, energy_east));
+        int min_energy =  energy_mat.at(row,col) + std::min(energy_center, std::min(energy_west, energy_east));
         vertical_cost.at(row,col) += min_energy; 
       }
     } 
