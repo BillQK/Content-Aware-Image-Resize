@@ -46,23 +46,21 @@ const int& Matrix::at(int row, int column) const {
 Matrix::Slice Matrix::get_row_slice(int row, int col_start, int col_end) const {
     assert(col_start<col_end);
     assert(row>=0);
-    assert(row<=m_height);
+    assert(row<m_height);
 
     vector<int> data;
     Slice s = Slice{data, row, col_start, col_end};
 
-    if(col_start < 0) {
-        // ret slice, first element is 0
+    if(col_start < 0) { // ret slice, first element is 0
         col_start = 0;
     }
-    if(col_end > m_width) {
-        // ret slice is last element
+    if(col_end > m_width) { // ret slice is last element
         col_end = m_width;
     }
 
     // row is height, col start/end is width, so get a slice @ a row
-    for(int i = col_start; i<col_end; i++) {
-        data.push_back(at(row, i));
+    for(int i = col_start; i<=col_end; i++) {
+        s.data.push_back(at(row, i));
     }
     return s;
 }

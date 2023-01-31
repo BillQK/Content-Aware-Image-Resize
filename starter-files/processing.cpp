@@ -1,8 +1,8 @@
-// #include <algorithm>
+#include <iostream>
 
 #include "processing.hpp"
 
-// using namespace std;
+using namespace std;
 
 namespace {
   // The implementation of squared_difference is provided for you.
@@ -55,8 +55,8 @@ Image rotate_right(const Image& img) {
 // Returns the energy Matrix computed from the given Image.
 // See the assignment spec for details on computing the energy matrix.
 Matrix compute_energy_matrix(const Image& img) {
-  Matrix energy_mat = Matrix{img.get_height(), img.get_width()};
-  int max_energy;
+  Matrix energy_mat = Matrix{img.get_width(), img.get_height()};
+  int max_energy = 0;
   // fills middle
   for(int row=1; row<energy_mat.get_height()-1; ++row) {
     for(int col=1; col<energy_mat.get_width()-1; ++col) {
@@ -85,37 +85,34 @@ Matrix compute_energy_matrix(const Image& img) {
 // See the assignment spec for details on computing the cost matrix.
 Matrix compute_vertical_cost_matrix(const Image& img) {
   Matrix energy_mat = compute_energy_matrix(img); 
-  Matrix vertical_cost = Matrix{img.get_height(), img.get_width()};
+  Matrix vertical_cost = Matrix{img.get_width(), img.get_height()};
   // first row
   for(int col=0; col<vertical_cost.get_width(); ++col) {
     vertical_cost.at(0,col) = energy_mat.at(0,col);
   }
   // remaining rows
   for (int row = 1; row < vertical_cost.get_height(); ++row) {
-    for (int col = 0; col < vertical_cost.get_width(); ++col){
+    for (int col = 0; col < vertical_cost.get_width(); ++col) {
+      int min_energy = 0;
+      int center = vertical_cost.at(row-1,col);
       // left border
       if(col==0) {
-        int energy_center = energy_mat.at(row-1,col);
-        int energy_east = energy_mat.at(row-1, col+1);
-        int min_energy = std::min(energy_center, energy_east);
-        vertical_cost.at(row,col) += min_energy; 
+        int east = vertical_cost.at(row-1, col+1);
+        min_energy = min(center, east);
       }
       // right border
       else if(col==vertical_cost.get_width()-1) {
-        int energy_west = energy_mat.at(row-1,col-1);
-        int energy_center = energy_mat.at(row-1,col);
-        int min_energy = std::min(energy_west, energy_center);
-        vertical_cost.at(row,col) += min_energy; 
+        int west = vertical_cost.at(row-1,col-1);
+        min_energy = min(west, center);
       }
       // everything else
       else {
-        int energy_west = energy_mat.at(row-1,col-1);
-        int energy_center = energy_mat.at(row-1,col); 
-        int energy_east = energy_mat.at(row-1, col+1); 
-        int min_energy = std::min(energy_center, std::min(energy_west, energy_east));
-        vertical_cost.at(row,col) += min_energy; 
+        int west = vertical_cost.at(row-1,col-1);
+        int east = vertical_cost.at(row-1, col+1); 
+        min_energy = min(west, min(center, east));
       }
-    } 
+      vertical_cost.at(row,col) = energy_mat.at(row,col) + min_energy;
+    }
   }
   return vertical_cost;
 }
@@ -127,64 +124,72 @@ Matrix compute_vertical_cost_matrix(const Image& img) {
 // one (i.e. with the lowest column number) is used.
 // See the project spec for details on computing the minimal seam.
 std::vector<int> find_minimal_vertical_seam(const Matrix& cost){ 
-  std::vector<int> min_vect;
-  int min_col = 0; // min_col does not need to be reset, value needs to be carried over
-  for(int row=cost.get_height(); row>0; --row) {
-    // values reset every new row
-    int min_cost = 0;
-    for(int col=0; col<cost.get_width(); ++row) {
-      // bottom row: find the minimum cost
-      if(row==cost.get_height()) {
-        // min_cost = std::min(cost.at(row, col), min_cost);
+  vector<int> min_vect;
+  int min_index = 0; // min_index does not need to be reset, value needs to be carried over
+  for(int row=cost.get_height()-1; row>=0; --row) {
+    // min cost is set to the first value of the row
+    int min_cost = cost.at(row,0);
+    for(int col=0; col<cost.get_width(); ++col) {
+      // if row = bottom row: find the minimum cost
+      if(row==cost.get_height()-1) {
         if(cost.at(row, col) < min_cost) {
-          min_col = col;
+          min_cost = cost.at(row, col);
+          min_index = col;
         }
       }
       // remaining rows
       else {
         // left border
-        if(min_col == 0){
-          Matrix::Slice s = cost.get_row_slice(row-1, min_col, min_col+1); // middle & right col
-          std::vector<int> data = s.data; // need the index of the minimum # in vector
+        if(min_index == 0){
+          Matrix::Slice s = cost.get_row_slice(row-1, min_index, min_index+1); // middle & right col
+          vector<int> data = s.data; // need the index of the minimum # in vector
           // if(data.at(0) <= data.at(1)){
-          //   min_col = min_col;
+          //   min_index = min_index;
           // }
           if(data.at(1) > data.at(0)) {
-            min_col = min_col+1;
+            min_index = min_index+1;
           }
+          cout << "left bord" << endl;
         }
         // right border
-        else if(min_col == cost.get_width()-1){
-          Matrix::Slice s = cost.get_row_slice(row-1, min_col-1, min_col); // left & middle col
-          std::vector<int> data = s.data;
+        else if(min_index == cost.get_width()-1){
+          Matrix::Slice s = cost.get_row_slice(row-1, min_index-1, min_index); // left & middle col
+          vector<int> data = s.data;
 
           if(data.at(0) <= data.at(1)){
-            min_col = min_col-1;
+            min_index = min_index-1;
           }
           // else: no change
+          cout << "right bord" << endl;
         }
         // everything else
         else{
-          Matrix::Slice s = cost.get_row_slice(row-1, min_col-1, min_col+1);
-          std::vector<int> data = s.data;
-          // 3 values in vector, get minimum & save the index to min_col
+          Matrix::Slice s = cost.get_row_slice(row-1, min_index-1, min_index+1);
+          cout << s.row << endl;
+          cout << s.col_start << endl;
+          cout << s.col_end << endl;
+          cout << s.data.at(0) << endl;
+          
+          // vector<int> s_data = s.data;
+          // 3 values in vector, get minimum & save the index to min_index
           // // if left is min
           // if(data.at(0) <= data.at(1)){
           //   if(data.at(0) <= data.at(2)){
-          //     min_col = min_col-1;
+          //     min_index = min_index-1;
           //   }
           // }
           // // if middle is min
           // if(data.at(1) < data.at(0) && data.at(1) <= data.at(2))
           // // if right is min
           // if(data.at(2) < data.at(0) && data.at(2) < data.at(1))
-
+          cout << "everything else" << endl;
+          cout << "data"<<s.data.at(0) << endl;
           // can call min & then have for loop which has min==data.at(i), then break the loop at the first instance
-          int min_data = std::min(data.at(0), std::min(data.at(1), data.at(2)));
-          // q: unsigned long ?
-          for(unsigned long i=0; i<data.size(); ++i){
-            if(data.at(i) == min_data) {
-              min_col = i;
+          int min_data = min(s.data.at(0), min(s.data.at(1), s.data.at(2)));
+          
+          for(size_t i=0; i<s.data.size(); ++i){
+            if(s.data.at(i) == min_data) {
+              min_index = i;
               break;
             }
           }
@@ -193,10 +198,11 @@ std::vector<int> find_minimal_vertical_seam(const Matrix& cost){
     }
     min_vect.push_back(min_cost);
   }
-  std::vector<int> reversed_vect;
+  vector<int> reversed_vect;
   int iterator = 0;
   for(int i=min_vect.size()-1; i>=0; --i){
     reversed_vect.at(i) = min_vect.at(iterator);
+    // cout << reversed_vect.at(i) << endl;
     iterator++;
   }
   return reversed_vect;
@@ -211,7 +217,7 @@ Image remove_vertical_seam(const Image& img, const std::vector<int>& seam){
   Image new_img = Image(img.get_width()-1, img.get_height());
 
   Matrix vertical_cost = compute_vertical_cost_matrix(img);
-  std::vector<int> min_seam = find_minimal_vertical_seam(vertical_cost);
+  vector<int> min_seam = find_minimal_vertical_seam(vertical_cost);
 
   for(int row=0; row<img.get_height(); ++row){
     for(int col=0; col<img.get_width(); ++col){

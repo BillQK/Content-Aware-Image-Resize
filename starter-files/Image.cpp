@@ -47,7 +47,6 @@ void Image::print(std::ostream& os) const {
     // print pixel
     for(int row=0;row<m_height; row++) {
         for(int col=0; col<m_width; col++) {
-            // q: do i flush w/ ends? tests doesn't pass then
             os << m_red_channel.at(row, col) << " ";
             os << m_green_channel.at(row, col) << " ";
             os << m_blue_channel.at(row, col) << " ";
