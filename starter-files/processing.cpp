@@ -73,23 +73,22 @@ Matrix compute_energy_matrix(const Image& img) {
   for(int row=1; row<energy_mat.get_height()-1; ++row) {
     for(int col=1; col<energy_mat.get_width()-1; ++col) {
       Pixel n=img.get_pixel(row-1, col);
-      Pixel s=img.get_pixel(row-1, col);
-      Pixel w=img.get_pixel(row, col-1);
-      Pixel e=img.get_pixel(row, col+1);
-      
-      int energy_x = squared_difference(n,s) + squared_difference(w,e);
-      energy_mat.at(row, col) = energy_x;
-      
+      Pixel s=img.get_pixel(row+1, col);
+      Pixel w = img.get_pixel(row, col-1); 
+      Pixel e = img.get_pixel(row, col+1);
+      int energy_x = energy_mat.at(row, col) = squared_difference(n,s) + squared_difference(w,e);
       max_energy = std::max(energy_x, max_energy);
     }
   }
-  // fills borders
-  for(int row=0; row<energy_mat.get_height(); ++row) {
-    for(int col=0; col<energy_mat.get_width(); ++col) {
-      if(row==0 || col==0 || row==energy_mat.get_height()-1 || col==energy_mat.get_width()-1) {
-        energy_mat.at(row, col) = max_energy;
-      }
-    }
+  // fill border
+  for(int row = 0; row< energy_mat.get_height(); ++row){ 
+    energy_mat.at(row,0) = max_energy; 
+    energy_mat.at(row,energy_mat.get_width()-1) = max_energy;
+  }
+
+  for(int col = 0; col< energy_mat.get_width(); ++col) {
+    energy_mat.at(0,col) = max_energy; 
+    energy_mat.at(energy_mat.get_height()-1,col) = max_energy;
   }
   return energy_mat;
 }
