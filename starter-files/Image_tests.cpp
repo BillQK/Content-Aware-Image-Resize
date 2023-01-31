@@ -68,19 +68,40 @@ TEST(test_readppm) {
 }
 
 TEST(test_get_width) {
-
+  Image img = Image(4,5); 
+  ASSERT_EQUAL(img.get_width(), 4);
 }
 
 TEST(test_get_height) {
-
+  Image img = Image(4,5); 
+  ASSERT_EQUAL(img.get_height(), 5); 
 }
 
 TEST(test_get_pixel) {
+  Image img = Image(4,5); 
+  Pixel p = img.get_pixel(0,0);
+  Pixel a = Pixel{0,0,0};
+  ASSERT_EQUAL(p.b,a.b);
+  ASSERT_EQUAL(p.g,a.g);
+  ASSERT_EQUAL(p.r,a.r);
 
-}
+} 
 
 TEST(test_set_pixel) {
+  Pixel p = Pixel{255,255,250}; 
+  Image img = Image(4,5); 
+  img.set_pixel(2,3, p); 
+  Pixel a = img.get_pixel(0,0); 
+  Pixel b = img.get_pixel(2,3); 
 
+  ASSERT_NOT_EQUAL(p.r,a.r);
+  ASSERT_NOT_EQUAL(p.g,a.g);
+  ASSERT_NOT_EQUAL(p.b,a.b);
+
+  ASSERT_EQUAL(p.r,b.r);
+  ASSERT_EQUAL(p.g,b.g);
+  ASSERT_EQUAL(p.b,b.b);
+  
 }
 
 // This is some macro magic that adds a main() function that runs the test cases

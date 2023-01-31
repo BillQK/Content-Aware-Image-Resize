@@ -184,7 +184,7 @@ std::vector<int> find_minimal_vertical_seam(const Matrix& cost){
 // The width of the image will be one less than before.
 // See the project spec for details on removing a vertical seam.
 Image remove_vertical_seam(const Image& img, const std::vector<int>& seam){ 
-
+  
 }
 
 // Returns a copy of img with its width reduced to be new_width by using
