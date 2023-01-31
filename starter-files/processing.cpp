@@ -1,5 +1,6 @@
 #include "processing.hpp"
 
+
 namespace {
   // The implementation of squared_difference is provided for you.
   int squared_difference(Pixel p1, Pixel p2);
@@ -51,7 +52,16 @@ pixel (height, width) bottom right is now at (0, width) top right
 // Returns a copy of the given image that is rotated 90 degrees to the
 // right (clockwise).
 Image rotate_right(const Image& img) {
-  
+  int new_width = img.get_height(); 
+  int new_height = img.get_width();
+  Image new_image = Image(new_width, new_height); 
+  for (int row = 0; row < new_height; ++row) {
+    for (int col = 0; col < new_width; ++col) {
+      Pixel from_pixel = img.get_pixel(img.get_height()-1-col,row);
+      new_image.set_pixel(row,col,from_pixel);
+    }
+  }
+  return new_image;
 }
 
 // Returns the energy Matrix computed from the given Image.
@@ -74,7 +84,18 @@ Matrix compute_energy_matrix(const Image& img) {
 // Returns the vertical cost Matrix computed from the given Image.
 // See the assignment spec for details on computing the cost matrix.
 Matrix compute_vertical_cost_matrix(const Image& img) {
-
+  Matrix energy_mat = compute_energy_matrix(img); 
+  Matrix vertical_cost = Matrix{img.get_height(), img.get_width()};
+  for (int row = 1; row < vertical_cost.get_height(); ++row) {
+    for (int col =0; col<vertical_cost.get_width(); ++col){
+      int energy_west = energy_mat.at(row-1,col-1); 
+      int energy_center = energy_mat.at(row-1,col); 
+      int energy_east = energy_mat.at(row-1, col+1); 
+      int min_energy = std::min(energy_center, std::min(energy_west, energy_east));
+      vertical_cost.at(row,col) += min_energy; 
+    } 
+  }
+  return vertical_cost;
 }
 // Returns a vector containing the column indices of each pixel along the
 // vertical seam with the minimal cost according to the given cost matrix.
@@ -84,6 +105,7 @@ Matrix compute_vertical_cost_matrix(const Image& img) {
 // one (i.e. with the lowest column number) is used.
 // See the project spec for details on computing the minimal seam.
 std::vector<int> find_minimal_vertical_seam(const Matrix& cost){ 
+  
 
 }
 
