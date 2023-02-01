@@ -42,6 +42,21 @@ TEST(test_readppm) {
     ASSERT_EQUAL(correct.str(), actual.str());
 }
 
+// Testing readppm with an input stream instead of a file
+// checking that it's reading the input correctly
+TEST(test_readppm_stream) {
+  string in = "P3 \n2 2 \n255 \n1 1 2 \n2 2 2 \n3 3 2 \n4 4 4 \n";
+  std::istringstream in_stream(in);
+  Image img = Image::read_ppm(in_stream);
+
+  string correct_out = "\nP3 \n2 2 \n255 \n1 1 2 2 2 2 \n3 3 2 4 4 4 \n";
+  std::ostringstream out_stream;
+  img.print(out_stream);
+  string actual = out_stream.str();
+  std::cout << actual << std::endl;
+  ASSERT_EQUAL(actual, correct_out);
+}
+
 // Checking that get_width returns the correct width
 // with different Image constructors
 TEST(test_get_width) {
