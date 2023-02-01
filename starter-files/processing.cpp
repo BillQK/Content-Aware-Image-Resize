@@ -64,7 +64,8 @@ Matrix compute_energy_matrix(const Image& img) {
       Pixel s=img.get_pixel(row+1, col);
       Pixel w = img.get_pixel(row, col-1); 
       Pixel e = img.get_pixel(row, col+1);
-      int energy_x = energy_mat.at(row, col) = squared_difference(n,s) + squared_difference(w,e);
+      energy_mat.at(row, col) = squared_difference(n,s) + squared_difference(w,e);
+      int energy_x = energy_mat.at(row, col);
       max_energy = std::max(energy_x, max_energy);
     }
   }
@@ -231,6 +232,7 @@ Image remove_vertical_seam(const Image& img, const std::vector<int>& seam){
     }
   }
   return new_img;
+
 }
 
 // Returns a copy of img with its width reduced to be new_width by using
@@ -238,7 +240,11 @@ Image remove_vertical_seam(const Image& img, const std::vector<int>& seam){
 // Requires that 0 < new_width <= img.get_width(), otherwise the behavior
 // is undefined.
 Image seam_carve_width(const Image& img, int new_width){
-
+  Matrix energy_matrix = compute_energy_matrix(img);
+  Matrix cost_matrix = compute_vertical_cost_matrix(img);
+  std::vector<int> minimal_cost_seam = find_minimal_vertical_seam(cost_matrix);
+  Image new_img = remove_vertical_seam(img, minimal_cost_seam);
+  return new_img;
 }
 
 // Returns a copy of img with its height reduced to be new_height by using
@@ -246,7 +252,10 @@ Image seam_carve_width(const Image& img, int new_width){
 // Requires that 0 < new_height <= img.get_height(), otherwise the behavior
 // is undefined.
 Image seam_carve_height(const Image& img, int new_height){
-
+  Image new_image = rotate_left(img); 
+  new_image = seam_carve_width(new_image, new_height); 
+  new_image = rotate_right(new_image);
+  return new_image;
 }
 
 // Returns a copy of img with its width and height reduced to be
@@ -259,5 +268,7 @@ Image seam_carve_height(const Image& img, int new_height){
 // 0 < new_height <= img.get_height(), otherwise the behavior
 // is undefined.
 Image seam_carve(const Image& img, int newWidth, int newHeight){
-
+  Image new_img = seam_carve_width(img, newWidth);
+  new_img = seam_carve_height(img, newHeight);
+  return new_img;
 }
