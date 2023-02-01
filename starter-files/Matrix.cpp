@@ -45,6 +45,7 @@ const int& Matrix::at(int row, int column) const {
 
 Matrix::Slice Matrix::get_row_slice(int row, int col_start, int col_end) const {
     assert(col_start<col_end);
+    cout << "row: "<<row << endl;
     assert(row>=0);
     assert(row<m_height);
 

@@ -126,6 +126,7 @@ Matrix compute_vertical_cost_matrix(const Image& img) {
 std::vector<int> find_minimal_vertical_seam(const Matrix& cost){ 
   vector<int> min_vect;
   int min_index = 0; // min_index does not need to be reset, value needs to be carried over
+  
   for(int row=cost.get_height()-1; row>=0; --row) {
     // min cost is set to the first value of the row
     int min_cost = cost.at(row,0);
@@ -139,14 +140,14 @@ std::vector<int> find_minimal_vertical_seam(const Matrix& cost){
       }
       // remaining rows
       else {
+        cout <<"row: " << row << " " << "min index: "<<min_index << endl;
         // left border
         if(min_index == 0){
           Matrix::Slice s = cost.get_row_slice(row-1, min_index, min_index+1); // middle & right col
-          vector<int> data = s.data; // need the index of the minimum # in vector
           // if(data.at(0) <= data.at(1)){
           //   min_index = min_index;
           // }
-          if(data.at(1) > data.at(0)) {
+          if(s.data.at(1) < s.data.at(0)) {
             min_index = min_index+1;
           }
           cout << "left bord" << endl;
@@ -182,7 +183,6 @@ std::vector<int> find_minimal_vertical_seam(const Matrix& cost){
           // if(data.at(1) < data.at(0) && data.at(1) <= data.at(2))
           // // if right is min
           // if(data.at(2) < data.at(0) && data.at(2) < data.at(1))
-          cout << "everything else" << endl;
           cout << "data"<<s.data.at(0) << endl;
           // can call min & then have for loop which has min==data.at(i), then break the loop at the first instance
           int min_data = min(s.data.at(0), min(s.data.at(1), s.data.at(2)));
