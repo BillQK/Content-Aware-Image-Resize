@@ -8,7 +8,13 @@
 using namespace std;
 
 int main(int argc, char **argv) {
-  (void)argc;
+  // exit the program if not enough arguments entered
+  if (argc < 4) {
+    cout << "Usage: resize.exe IN_FILENAME OUT_FILENAME WIDTH [HEIGHT]\n"
+         << "WIDTH and HEIGHT must be less than or equal to original" << endl;
+    return 1;
+  }
+
   string inputFile, outputFile;
   int width, height;
 
@@ -16,7 +22,8 @@ int main(int argc, char **argv) {
   outputFile = argv[2];
   width = stoi(argv[3]);
 
-  if (stoi(argv[4])) {
+  // set the height if it's given, else height is set to 0
+  if (argc > 4) {
     height = stoi(argv[4]);
   } else {
     height = 0;
@@ -37,6 +44,7 @@ int main(int argc, char **argv) {
   || (height < 0 && height > img.get_height())) {
     cout << "Usage: resize.exe IN_FILENAME OUT_FILENAME WIDTH [HEIGHT]\n"
          << "WIDTH and HEIGHT must be less than or equal to original" << endl;
+    return 1;
   } else {
     Image new_img;
     if (height == 0) {
