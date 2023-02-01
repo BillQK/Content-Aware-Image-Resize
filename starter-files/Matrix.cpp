@@ -10,7 +10,9 @@ Matrix::Matrix() : m_width(0), m_height(0) {}
 
 // Initializes a Matrix with the given dimensions and
 // with each cell initialized to zero.
-Matrix::Matrix(int width, int height) : Matrix(width, height, 0) {}
+Matrix::Matrix(int width, int height) : Matrix(width, height, 0)
+{
+}
 
 // Initializes a Matrix with the given dimensions and
 // with each cell initialized to the value specified by fill_value.
@@ -22,6 +24,7 @@ Matrix::Matrix(int width, int height, int fill_value) : m_width(width), m_height
         m_data.push_back(fill_value);
     }
 }
+
 
 int Matrix::get_width() const
 {
@@ -55,33 +58,38 @@ const int &Matrix::at(int row, int column) const
 
 Matrix::Slice Matrix::get_row_slice(int row, int col_start, int col_end) const
 {
-    // Check if the row and col_start/end are valid
-    assert(row >= 0 && row < m_height);
-    assert(col_start >= 0 && col_start < m_width);
-    assert(col_end >= 0 && col_end < m_width);
-    assert(col_start <= col_end);
 
-    // If col_end is greater than the width of the matrix, set it to the width
-    if (col_end > m_width)
-    {
-        col_end = m_width;
-    }
-
-    // If col_start is less than zero, set it to zero
+    // Adjust col_start if it's less than 0
     if (col_start < 0)
     {
         col_start = 0;
     }
 
-    vector<int> data;
-    Slice s = Slice{data, row, col_start, col_end};
-
-    // Get the slice of data at the specified row and columns
-    for (int i = col_start; i <= col_end; i++)
+    // Adjust col_end if it's greater than the width of this matrix
+    if (col_end > m_width)
     {
-        s.data.push_back(at(row, i));
+        col_end = m_width - 1;
     }
-    return s;
+
+    // Ensure that col_start is strictly less than col_end
+    assert(col_start < col_end);
+    // row is out of bounds
+    assert(row >= 0);
+    // row is out of bounds
+    assert(row <= m_height);
+
+    std::vector<int> data;
+
+    // Get row data
+    for (int row = 0; row < m_height; row++)
+    {
+        for (int col = 0; col < m_width; col++)
+        {
+            data.push_back(m_data[row * m_width + col]);
+        }
+    }
+    // Create and return a new Slice object
+    return Slice{data, row, col_start, col_end};
 }
 
 void Matrix::print(std::ostream &os) const

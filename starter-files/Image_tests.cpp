@@ -16,16 +16,19 @@ using namespace std;
 // that Image::print produces the correct output.
 TEST(test_print_basic)
 {
-  const Pixel red = {255, 0, 0};
-  const Pixel green = {0, 255, 0};
   const Pixel blue = {0, 0, 255};
   const Pixel white = {255, 255, 255};
+  const Pixel red = {255, 0, 0};
+  const Pixel green = {0, 255, 0};
+  
 
   Image img(2, 2);
-  img.set_pixel(0, 0, red);
-  img.set_pixel(0, 1, green);
   img.set_pixel(1, 0, blue);
   img.set_pixel(1, 1, white);
+  img.set_pixel(0, 0, red);
+  img.set_pixel(0, 1, green);
+ 
+  
 
   // Capture our output
   ostringstream actual;
@@ -183,6 +186,8 @@ TEST(test_set_pixel)
   ASSERT_EQUAL(p.g, b.g);
   ASSERT_EQUAL(p.b, b.b);
 }
+
+
 
 
 // This is some macro magic that adds a main() function that runs the test cases
