@@ -46,14 +46,12 @@ int &Matrix::at(int row, int column)
     return m_data.at(get_width() * row + column);
 }
 
-const int &Matrix::at(int row, int column) const
-{
-    assert(row >= 0);
-    assert(column >= 0);
-    assert(row < m_height);
-    assert(column < m_width);
-
-    return m_data.at(get_width() * row + column);
+const int& Matrix::at(int row, int column) const {
+    assert(row>=0);
+    assert(column>=0);
+    assert(row<m_height);
+    assert(column<m_width);
+    return m_data.at(get_width()*row+column);
 }
 
 Matrix::Slice Matrix::get_row_slice(int row, int col_start, int col_end) const

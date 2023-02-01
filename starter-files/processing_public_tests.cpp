@@ -123,8 +123,6 @@ void test_cost(const Matrix& cost_mat, string prefix){
 
   auto cost_mat_correct = load_matrix(prefix + "_cost_correct.txt");
 
-  cost_mat.print(cout);
-  cost_mat_correct.print(cout);
   assert(Matrix_equal(cost_mat, cost_mat_correct));
   cout << "PASS" << endl;
 }
