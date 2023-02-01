@@ -155,6 +155,8 @@ TEST(test_set_pixel)
 }
 
 
+
+
 // This is some macro magic that adds a main() function that runs the test cases
 // defined in this file. Do not add your own main() function.
 TEST_MAIN()
