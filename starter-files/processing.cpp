@@ -1,5 +1,6 @@
 #include "processing.hpp"
 
+#include <cassert>
 #include <iostream>
 
 using namespace std;
@@ -129,31 +130,33 @@ std::vector<int> find_minimal_vertical_seam(const Matrix& cost) {
   vector<int> min_vect;
   // min_index does not need to be reset, value needs to be carried over
   int min_index = 0;
-  int min_cost;
-  for (int row = cost.get_height() - 1; row > 0; --row) {
-    // if row = bottom row: loop to find the minimum cost
-    if (row == cost.get_height() - 1) {
-      min_cost = cost.at(row, 0);  // min cost is set to the first value of the row
-      for (int col = 0; col < cost.get_width(); ++col) {
-        if (cost.at(row, col) < min_cost && cost.at(row, col) != min_cost) {
-          min_cost = cost.at(row, col);
-          min_index = col;
-        }
-      }
-      min_vect.push_back(min_index);
+
+  // for bottom row: loop to find the minimum cost
+  int row = cost.get_height() - 1;
+  int min_cost = cost.at(row, 0);  // min cost is set to the first value of the row
+  for (int col = 0; col < cost.get_width(); ++col) {
+    if (cost.at(row, col) < min_cost && cost.at(row, col) != min_cost) {
+      min_cost = cost.at(row, col);
+      min_index = col;
     }
-    
-    // continue to look for minimum in the slices above
+  }
+  // cout<<"bottom min"<<min_cost<<endl;
+  min_vect.push_back(min_index);
+
+  // continue to look for minimum in the slices above
+  for (int row = cost.get_height() - 1; row > 0; --row) {
     // left border
     if (min_index == 0) {
-      Matrix::Slice s = cost.get_row_slice(row - 1, min_index, min_index + 1);  // middle & right col
+      // taking slice of middle & right col
+      Matrix::Slice s = cost.get_row_slice(row - 1, min_index, min_index + 1); 
       if (s.data.at(0) > s.data.at(1)) {
         min_index = min_index + 1;
       }
     }
     // right border
     else if (min_index == cost.get_width() - 1) {
-      Matrix::Slice s = cost.get_row_slice(row - 1, min_index - 1, min_index);  // left & middle col
+      // taking slice of left & middle col
+      Matrix::Slice s = cost.get_row_slice(row - 1, min_index - 1, min_index); 
       vector<int> data = s.data;
 
       if (data.at(0) <= data.at(1)) {
@@ -164,10 +167,15 @@ std::vector<int> find_minimal_vertical_seam(const Matrix& cost) {
     else {
       Matrix::Slice s = cost.get_row_slice(row - 1, min_index - 1, min_index + 1);
       min_cost = min(s.data.at(0), min(s.data.at(1), s.data.at(2)));
+      // cout<<s.data.at(0)<<" "<<s.data.at(1)<<" "<<s.data.at(2)<<endl;
 
       if (min_cost == s.data.at(0)) {
         min_index = min_index - 1;
-      } else if (min_cost == s.data.at(2)) {
+      } 
+      else if (min_cost == s.data.at(1)) {
+        min_index = min_index;
+      }
+      else {
         min_index = min_index + 1;
       }
     }
@@ -192,13 +200,13 @@ Image remove_vertical_seam(const Image& img, const std::vector<int>& seam) {
   Image new_img = Image(img.get_width() - 1, img.get_height());
 
   Matrix vertical_cost = compute_vertical_cost_matrix(img);
-  vector<int> min_seam = find_minimal_vertical_seam(vertical_cost);
+  // vector<int> min_seam = find_minimal_vertical_seam(vertical_cost);
 
   for (int row = 0; row < img.get_height(); ++row) {
     int new_col = 0;
     for (int col = 0; col < img.get_width(); ++col) {
-      // only add pixel when the columns do not equal a minimum col
-      if (col != min_seam.at(row)) {
+      // only add pixel when the columns do not equal a seam value
+      if (col != seam.at(row)) {
         Pixel curr_pix = img.get_pixel(row, col);
         new_img.set_pixel(row, new_col, curr_pix);
         new_col++;
@@ -223,7 +231,9 @@ Image seam_carve_width(const Image& img, int new_width) {
     // cout<<"new width"<<new_width<<endl;
     Matrix energy_matrix = compute_energy_matrix(new_img);
     Matrix cost_matrix = compute_vertical_cost_matrix(new_img);
+
     vector<int> minimal_cost_seam = find_minimal_vertical_seam(cost_matrix);
+
     new_img = remove_vertical_seam(new_img, minimal_cost_seam);
     // cout<<"carved width"<<new_img.get_width()<<endl;
   }
@@ -239,10 +249,17 @@ Image seam_carve_height(const Image& img, int new_height) {
   assert(0 < new_height);
   assert(new_height <= img.get_height());
 
-  Image new_image = rotate_left(img);
-  new_image = seam_carve_width(new_image, new_height);
-  new_image = rotate_right(new_image);
-  return new_image;
+  Image new_img = rotate_left(img);
+
+  // new_img's width is original img's height
+  while (new_img.get_width() != new_height) {
+    // cout<<"height"<<new_img.get_width()<<endl;
+    // cout<<"new height"<<new_height<<endl;
+
+    new_img = seam_carve_width(new_img, new_height);
+  }
+  new_img = rotate_right(new_img);
+  return new_img;
 }
 
 // Returns a copy of img with its width and height reduced to be
@@ -255,7 +272,13 @@ Image seam_carve_height(const Image& img, int new_height) {
 // 0 < new_height <= img.get_height(), otherwise the behavior
 // is undefined.
 Image seam_carve(const Image& img, int newWidth, int newHeight) {
+  assert(0 < newWidth);
+  assert(newWidth <= img.get_width());
+  assert(0 < newHeight);
+  assert(newHeight <= img.get_height());
+  // cout<<"in here"<<img.get_height()<<newHeight<<endl;
+  // cout<<"new width"<<new_width<<endl;
   Image new_img = seam_carve_width(img, newWidth);
-  new_img = seam_carve_height(img, newHeight);
+  new_img = seam_carve_height(new_img, newHeight);
   return new_img;
 }

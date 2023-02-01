@@ -14,7 +14,8 @@ Image::Image(int width, int height) : m_width(width), m_height(height) {
   m_blue_channel = Matrix(width, height, 0);
 }
 
-Image::Image(int width, int height, const Pixel& fill) : m_width(width), m_height(height) {
+Image::Image(int width, int height, const Pixel& fill) : 
+m_width(width), m_height(height) {
   m_red_channel = Matrix(width, height, fill.r);
   m_green_channel = Matrix(width, height, fill.g);
   m_blue_channel = Matrix(width, height, fill.b);
