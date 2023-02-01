@@ -9,10 +9,7 @@ using namespace std;
 Image::Image(): m_width(0), m_height(0) {}
 
 
-Image::Image(int width, int height): m_width(width), m_height(height) {
-    m_red_channel = Matrix(width, height, 0);
-    m_green_channel = Matrix(width, height, 0);
-    m_blue_channel = Matrix(width, height, 0);
+Image::Image(int width, int height): Image(width, height, Pixel{0,0,0}){
 }
 
 Image::Image(int width, int height, const Pixel& fill): m_width(width), m_height(height) {

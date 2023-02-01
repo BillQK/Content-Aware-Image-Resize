@@ -27,6 +27,38 @@ TEST(test_Matrix_fill_basic)
 
 // This is some macro magic that adds a main() function that runs the test cases
 // defined in this file. Do not add your own main() function.
+TEST(test_empty_matrix) {
+  Matrix m; 
+  ASSERT_EQUAL(m.get_width(), 0);
+  ASSERT_EQUAL(m.get_height(), 0);
+}
+
+TEST(test_matrix_with_width_and_height_fill_value) {
+  Matrix m(3,4,5); 
+  ASSERT_EQUAL(m.get_width(), 3); 
+  ASSERT_EQUAL(m.get_height(), 4); 
+
+  for (int row = 0; row < m.get_height(); row++) {
+    for (int col = 0; col < m.get_width(); col++) {
+      ASSERT_EQUAL(m.at(row,col), 5);
+    }
+  }
+
+}
+
+TEST(test_matrix_with_width_height) {
+  Matrix m(3,4); 
+  ASSERT_EQUAL(m.get_width(),3); 
+  ASSERT_EQUAL(m.get_height(),4); 
+
+
+  for (int row = 0; row < m.get_height(); row++) {
+    for (int col = 0; col < m.get_width(); col++) {
+      ASSERT_EQUAL(m.at(row,col), 0);
+    }
+  }
+}
+
 
 TEST(test_Matrix_fill) {
 // 2 constructors
@@ -50,31 +82,22 @@ TEST(test_Matrix_get_Height) {
 
 }
 TEST(test_Matrix_at) {
-  const int width = 3; 
-  const int height = 5; 
-  const int value = 23; 
-  auto mat = Matrix(width, height, value); 
-  mat.at(2,3) = 25;
-
-  ASSERT_EQUAL(mat.at(2,3), 25);
+  Matrix m(3,4,5); 
+  ASSERT_EQUAL(m.at(0,0), 5); 
+  ASSERT_EQUAL(m.at(1,2), 5); 
+  m.at(0,0) = 6;
+  ASSERT_EQUAL(m.at(0,0), 6); 
+  
 }
 
 TEST(test_Matrix_get_row_slice) {
-  const int width = 3; 
-  const int height = 5; 
-  const int value = 23; 
-  auto mat = Matrix(width, height, value); 
-  const int row = 2;
-  const int col_start = 3; 
-  const int col_end = 5;
-  // mat.at(row, 3) = 25; 
-
-  std::vector<int> data = {23,23,23};
-  
-  auto s = Matrix::Slice{data, row, col_start, col_end};
-  auto s1 = mat.get_row_slice(row, col_start, col_end);
-  ASSERT_EQUAL(s1.data.at(0), 23);
-  // ASSERT_EQUAL(s1.row, 2);
+  Matrix m(3,4,5); 
+  Matrix::Slice d = m.get_row_slice(0,1,2); 
+  ASSERT_EQUAL(d.row, 0); 
+  ASSERT_EQUAL(d.col_start, 1);
+  ASSERT_EQUAL(d.col_end, 2);
+  ASSERT_EQUAL(d.data.at(0),5);
+  ASSERT_EQUAL(d.data.at(1),5); 
 }
 
 TEST_MAIN()
