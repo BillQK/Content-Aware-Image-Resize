@@ -31,7 +31,7 @@ int Matrix::get_height() const {
 
 int& Matrix::at(int row, int column) {
   assert(row >= 0);
-  assert(column >= 0);
+  // assert(column >= 0);
   assert(row < m_height);
   assert(column < m_width);
 
@@ -40,7 +40,7 @@ int& Matrix::at(int row, int column) {
 
 const int& Matrix::at(int row, int column) const {
   assert(row >= 0);
-  assert(column >= 0);
+  // assert(column >= 0);
   assert(row < m_height);
   assert(column < m_width);
 
@@ -53,19 +53,16 @@ Matrix::Slice Matrix::get_row_slice(int row, int col_start, int col_end) const {
   assert(row < m_height);
 
   vector<int> data;
-  Slice s = Slice{data, row, col_start, col_end};
+  // if start < 0, col_start is 0, if end > width, col_end the last column
+  col_start = max(0, col_start);
+  col_end = min(m_width-1, col_end);
 
-  if (col_start < 0) {  // ret slice, first element is 0
-    col_start = 0;
-  }
-  if (col_end > m_width) {  // ret slice is last element
-    col_end = m_width;
-  }
-
-  // row is height, col start/end is width, so get a slice @ a row
+  // push the cell values into the slice data vector
   for (int i = col_start; i <= col_end; i++) {
-    s.data.push_back(at(row, i));
+    data.push_back(at(row, i));
   }
+
+  Slice s = Slice{data, row, col_start, col_end};
   return s;
 }
 

@@ -167,13 +167,12 @@ std::vector<int> find_minimal_vertical_seam(const Matrix& cost) {
     else {
       Matrix::Slice s = cost.get_row_slice(row - 1, min_index - 1, min_index + 1);
       min_cost = min(s.data.at(0), min(s.data.at(1), s.data.at(2)));
-      // cout<<s.data.at(0)<<" "<<s.data.at(1)<<" "<<s.data.at(2)<<endl;
 
       if (min_cost == s.data.at(0)) {
         min_index = min_index - 1;
       } 
       else if (min_cost == s.data.at(1)) {
-        min_index = min_index;
+        min_index = min_index + 0;
       }
       else {
         min_index = min_index + 1;
@@ -200,7 +199,6 @@ Image remove_vertical_seam(const Image& img, const std::vector<int>& seam) {
   Image new_img = Image(img.get_width() - 1, img.get_height());
 
   Matrix vertical_cost = compute_vertical_cost_matrix(img);
-  // vector<int> min_seam = find_minimal_vertical_seam(vertical_cost);
 
   for (int row = 0; row < img.get_height(); ++row) {
     int new_col = 0;
@@ -227,15 +225,12 @@ Image seam_carve_width(const Image& img, int new_width) {
   Image new_img = img;
   // loop until cut down to desired width
   while (new_img.get_width() != new_width) {
-    // cout<<"width"<<new_img.get_width()<<endl;
-    // cout<<"new width"<<new_width<<endl;
     Matrix energy_matrix = compute_energy_matrix(new_img);
     Matrix cost_matrix = compute_vertical_cost_matrix(new_img);
 
     vector<int> minimal_cost_seam = find_minimal_vertical_seam(cost_matrix);
 
     new_img = remove_vertical_seam(new_img, minimal_cost_seam);
-    // cout<<"carved width"<<new_img.get_width()<<endl;
   }
 
   return new_img;
@@ -253,11 +248,9 @@ Image seam_carve_height(const Image& img, int new_height) {
 
   // new_img's width is original img's height
   while (new_img.get_width() != new_height) {
-    // cout<<"height"<<new_img.get_width()<<endl;
-    // cout<<"new height"<<new_height<<endl;
-
     new_img = seam_carve_width(new_img, new_height);
   }
+  
   new_img = rotate_right(new_img);
   return new_img;
 }
@@ -276,8 +269,7 @@ Image seam_carve(const Image& img, int newWidth, int newHeight) {
   assert(newWidth <= img.get_width());
   assert(0 < newHeight);
   assert(newHeight <= img.get_height());
-  // cout<<"in here"<<img.get_height()<<newHeight<<endl;
-  // cout<<"new width"<<new_width<<endl;
+
   Image new_img = seam_carve_width(img, newWidth);
   new_img = seam_carve_height(new_img, newHeight);
   return new_img;
