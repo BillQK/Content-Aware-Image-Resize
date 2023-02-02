@@ -29,7 +29,6 @@ int main(int argc, char **argv) {
     height = 0;
   }
 
-  cout << inputFile << " " << outputFile << " " << width << " " << height << endl;
 
   ifstream ifs(inputFile);
 
@@ -56,5 +55,5 @@ int main(int argc, char **argv) {
     new_img.print(ofs);
   }
 
-  return 1;
+  return 0;
 }

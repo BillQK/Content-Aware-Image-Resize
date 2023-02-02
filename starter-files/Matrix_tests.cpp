@@ -159,6 +159,10 @@ TEST(test_Matrix_get_row_slice) {
   ASSERT_EQUAL(s1.data.at(2), 23);
 }
 
+TEST(test_get_row_slice) {
+  
+}
+
 // Test that get_row_slice works with a negative start_col
 TEST(test_Matrix_get_row_slice_with_negative_negative) {
   Matrix m(3, 4, 5);

@@ -52,17 +52,18 @@ Matrix::Slice Matrix::get_row_slice(int row, int col_start, int col_end) const {
   assert(row >= 0);
   assert(row < m_height);
 
-  vector<int> data;
+  vector<int> data = vector<int>();
   // if start < 0, col_start is 0, if end > width, col_end the last column
   col_start = max(0, col_start);
   col_end = min(m_width-1, col_end);
 
   // push the cell values into the slice data vector
-  for (int i = col_start; i <= col_end; i++) {
-    data.push_back(at(row, i));
+  for (int i = col_start ; i <= col_end; i++) {
+    data.push_back(at(row , i));
   }
 
   Slice s = Slice{data, row, col_start, col_end};
+
   return s;
 }
 
