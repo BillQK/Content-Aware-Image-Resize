@@ -148,7 +148,7 @@ std::vector<int> find_minimal_vertical_seam(const Matrix& cost) {
     // left border
     if (min_index == 0) {
       // taking slice of middle & right col
-      Matrix::Slice s = cost.get_row_slice(row - 1, min_index, min_index + 1); 
+      Matrix::Slice s = cost.get_row_slice(row - 1, min_index, min_index + 2); 
       if (s.data.at(0) > s.data.at(1)) {
         min_index = min_index + 1;
       }
@@ -156,7 +156,7 @@ std::vector<int> find_minimal_vertical_seam(const Matrix& cost) {
     // right border
     else if (min_index == cost.get_width() - 1) {
       // taking slice of left & middle col
-      Matrix::Slice s = cost.get_row_slice(row - 1, min_index - 1, min_index); 
+      Matrix::Slice s = cost.get_row_slice(row - 1, min_index -1, min_index); 
       vector<int> data = s.data;
 
       if (data.at(0) <= data.at(1)) {
@@ -165,7 +165,9 @@ std::vector<int> find_minimal_vertical_seam(const Matrix& cost) {
     }
     // everything else
     else {
-      Matrix::Slice s = cost.get_row_slice(row - 1, min_index - 1, min_index + 1);
+      int left_bound = min_index -1; 
+      int right_bound = min_index + 2;
+      Matrix::Slice s = cost.get_row_slice(row - 1, left_bound, right_bound);
       min_cost = min(s.data.at(0), min(s.data.at(1), s.data.at(2)));
 
       if (min_cost == s.data.at(0)) {
