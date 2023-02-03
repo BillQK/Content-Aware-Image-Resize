@@ -14,7 +14,7 @@ Download the program from the repository
 Install the required dependencies
 Run the program by command: 
 
-# ./resize [Your Image] [Output] [Width] [Height]
+### ./resize [Your Image] [Output] [Width] [Height]
 
 ## Documentation
 A comprehensive user manual and technical specification document is included in the repository.
