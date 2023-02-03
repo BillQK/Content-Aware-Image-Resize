@@ -137,6 +137,8 @@ TEST(test_Matrix_get_Height)
   ASSERT_EQUAL(mat.get_height(), height);
 }
 
+
+
 // Test at() can be changed and gets the correct cell value
 TEST(test_Matrix_at)
 {
