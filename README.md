@@ -4,7 +4,6 @@ This program allows you to resize and rotate images in a content-aware manner us
 
 ## Features
 Content-aware resizing using the seam-carving algorithm <br />
-
 Optimized performance for faster resizing times <br />
 Cost savings by reducing the cost associated with storing and transmitting large images <br />
 Increased productivity by automating the image resizing process <br />
