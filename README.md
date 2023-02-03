@@ -14,6 +14,7 @@ Improved user experience by optimizing images for websites <br />
 Download the program from the repository <br />
 Install the required dependencies <br />
 Run the program by command: <br />
+### ./resize [Your Image] [Output] [Width] [Height]
 
 ## Examples
 
@@ -33,7 +34,6 @@ Run the program by command: <br />
 ![horses_right correct](https://user-images.githubusercontent.com/67892332/216512319-313a4d16-12ef-41a4-a9ae-b9cbca4c0472.jpg)
 
 
-### ./resize [Your Image] [Output] [Width] [Height]
 
 ## Documentation
 A comprehensive user manual and technical specification document is included in the repository. <br />
