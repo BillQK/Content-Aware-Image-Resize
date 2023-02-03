@@ -18,30 +18,19 @@ Run the program by command: <br />
 ## Examples
 
 #### Mr.Crab <br />
-[crabster.pdf](https://github.com/BillQK/Content-Aware-Image-Resize/files/10575427/crabster.pdf)
-[crabster_50x45.correct.pdf](https://github.com/BillQK/Content-Aware-Image-Resize/files/10575428/crabster_50x45.correct.pdf)
-[crabster_50x45.out.pdf](https://github.com/BillQK/Content-Aware-Image-Resize/files/10575429/crabster_50x45.out.pdf)
-[crabster_70x35.correct.pdf](https://github.com/BillQK/Content-Aware-Image-Resize/files/10575430/crabster_70x35.correct.pdf)
-[crabster_70x35.out.pdf](https://github.com/BillQK/Content-Aware-Image-Resize/files/10575431/crabster_70x35.out.pdf)
-[crabster_left.correct.pdf](https://github.com/BillQK/Content-Aware-Image-Resize/files/10575432/crabster_left.correct.pdf)
-[crabster_left.out.pdf](https://github.com/BillQK/Content-Aware-Image-Resize/files/10575433/crabster_left.out.pdf)
-[crabster_removed.correct.pdf](https://github.com/BillQK/Content-Aware-Image-Resize/files/10575434/crabster_removed.correct.pdf)
-[crabster_removed.out.pdf](https://github.com/BillQK/Content-Aware-Image-Resize/files/10575435/crabster_removed.out.pdf)
-[crabster_right.correct.pdf](https://github.com/BillQK/Content-Aware-Image-Resize/files/10575436/crabster_right.correct.pdf)
-[crabster_right.out.pdf](https://github.com/BillQK/Content-Aware-Image-Resize/files/10575437/crabster_right.out.pdf)
+![crabster](https://user-images.githubusercontent.com/67892332/216511684-a6c361e1-7618-4c66-8c85-817a74d56943.jpg)
+![crabster_50x45 correct](https://user-images.githubusercontent.com/67892332/216511685-77923adc-fcf9-4282-a65b-e6e600b43648.jpg)
+![crabster_70x35 correct](https://user-images.githubusercontent.com/67892332/216511687-65616c32-218b-40a1-ab79-0f9d1660b2a1.jpg)
+![crabster_left correct](https://user-images.githubusercontent.com/67892332/216511688-b9359804-dce5-434c-9dfa-87b924c18a53.jpg)
+![crabster_right correct](https://user-images.githubusercontent.com/67892332/216511690-2ec9f53e-c3bf-4133-a502-a3e236c568d0.jpg)
+
 
 #### Horses <br />
-[horses.pdf](https://github.com/BillQK/Content-Aware-Image-Resize/files/10575466/horses.pdf)
-[horses_300x382.correct.pdf](https://github.com/BillQK/Content-Aware-Image-Resize/files/10575467/horses_300x382.correct.pdf)
-[horses_300x382.out.pdf](https://github.com/BillQK/Content-Aware-Image-Resize/files/10575468/horses_300x382.out.pdf)
-[horses_400x250.correct.pdf](https://github.com/BillQK/Content-Aware-Image-Resize/files/10575470/horses_400x250.correct.pdf)
-[horses_400x250.out.pdf](https://github.com/BillQK/Content-Aware-Image-Resize/files/10575471/horses_400x250.out.pdf)
-[horses_400x250.pdf](https://github.com/BillQK/Content-Aware-Image-Resize/files/10575472/horses_400x250.pdf)
-[horses_left.correct.pdf](https://github.com/BillQK/Content-Aware-Image-Resize/files/10575473/horses_left.correct.pdf)
-[horses_left.out.pdf](https://github.com/BillQK/Content-Aware-Image-Resize/files/10575475/horses_left.out.pdf)
-[horses_removed.correct.pdf](https://github.com/BillQK/Content-Aware-Image-Resize/files/10575476/horses_removed.correct.pdf)
-[horses_removed.out.pdf](https://github.com/BillQK/Content-Aware-Image-Resize/files/10575477/horses_removed.out.pdf)
-[horses_right.correct.pdf](https://github.com/BillQK/Content-Aware-Image-Resize/files/10575479/horses_right.correct.pdf)
+![horses](https://user-images.githubusercontent.com/67892332/216512315-2db5ffb9-8203-4dc8-83d8-2ac9747be01d.jpg)
+![horses_300x382 correct](https://user-images.githubusercontent.com/67892332/216512316-dab740b3-0834-4bfc-a9b6-d0c1037814bc.jpg)
+![horses_400x250](https://user-images.githubusercontent.com/67892332/216512317-7dc4797d-3cde-4ea1-aa0e-c1cbceda03cf.jpg)
+![horses_left correct](https://user-images.githubusercontent.com/67892332/216512318-efbf550d-ad56-4c2a-bce3-6392e83c2055.jpg)
+![horses_right correct](https://user-images.githubusercontent.com/67892332/216512319-313a4d16-12ef-41a4-a9ae-b9cbca4c0472.jpg)
 
 
 ### ./resize [Your Image] [Output] [Width] [Height]
